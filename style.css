@@ -810,4 +810,15 @@ body {
 
 .remove-screenshot:hover {
     background: rgba(0, 0, 0, 0.7);
+}
+
+.upi-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.upi-name {
+    color: #5f6368;
+    font-size: 0.85rem;
 } 

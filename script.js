@@ -27,12 +27,16 @@ async function fetchSuccessUTRs() {
 async function fetchUpiId() {
     try {
         const response = await fetch('upi.txt');
-        const upiId = await response.text();
-        document.getElementById('upiId').textContent = upiId.trim();
-        generateQR(upiId.trim(), amount);
+        const data = await response.text();
+        const upiData = JSON.parse(data);
+        
+        document.getElementById('upiId').textContent = upiData.id;
+        document.getElementById('upiName').textContent = `Receiver: ${upiData.name}`;
+        generateQR(upiData.id, amount);
     } catch (error) {
         console.error('Error fetching UPI ID:', error);
         document.getElementById('upiId').textContent = 'Error loading UPI ID';
+        document.getElementById('upiName').textContent = '';
     }
 }
 
