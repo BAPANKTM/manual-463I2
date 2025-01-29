@@ -262,6 +262,34 @@ function showSuccessAnimation() {
     `;
 }
 
+// Add this function
+function openApp(app) {
+    const upiId = document.getElementById('upiId').textContent;
+    const payeeName = document.getElementById('upiName').textContent.replace('Receiver: ', '');
+    let url;
+
+    switch(app) {
+        case 'phonepe':
+            url = `phonepe://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR`;
+            break;
+        case 'gpay':
+            url = `tez://upi/pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR`;
+            break;
+        case 'paytm':
+            url = `paytmmp://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR`;
+            break;
+    }
+
+    // Try to open the app
+    window.location.href = url;
+
+    // Fallback for desktop or if app is not installed
+    setTimeout(() => {
+        const fallbackUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR`;
+        window.location.href = fallbackUrl;
+    }, 1000);
+}
+
 // Initialize
 fetchUpiId();
 fetchSuccessUTRs(); 

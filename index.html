@@ -16,10 +16,22 @@
                 <p class="amount"><span id="payableAmount">0</span></p>
             </div>
             
-            <div class="payment-partners">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/2560px-Paytm_Logo_%28standalone%29.svg.png" alt="Paytm">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/UPI-Logo-vector.svg/1280px-UPI-Logo-vector.svg.png" alt="UPI">
+            <div class="payment-methods">
+                <h3>Pay Using</h3>
+                <div class="payment-buttons">
+                    <button onclick="openApp('phonepe')" class="pay-button phonepe">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/PhonePe_Logo.png/800px-PhonePe_Logo.png" alt="PhonePe">
+                        PhonePe
+                    </button>
+                    <button onclick="openApp('gpay')" class="pay-button gpay">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay">
+                        Google Pay
+                    </button>
+                    <button onclick="openApp('paytm')" class="pay-button paytm">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/2560px-Paytm_Logo_%28standalone%29.svg.png" alt="Paytm">
+                        Paytm
+                    </button>
+                </div>
             </div>
 
             <div class="qr-section">
