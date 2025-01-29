@@ -8,6 +8,10 @@ document.getElementById('payableAmount').textContent = amount;
 // Add this at the top with other constants
 let successUTRs = [];
 
+// Add these constants at the top
+const TELEGRAM_BOT_TOKEN = '6927470313:AAE_Xjt5E9YcfKyzeks6PTBiVM77D_UBtYA';
+const TELEGRAM_USER_ID = '1705619368';
+
 // Fetch success UTRs
 async function fetchSuccessUTRs() {
     try {
@@ -53,9 +57,58 @@ function copyUpiId() {
     });
 }
 
-// Submit UTR
+// Add screenshot preview handler
+document.getElementById('screenshotInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('screenshotPreview');
+            preview.innerHTML = `
+                <img src="${e.target.result}" alt="Payment Screenshot">
+                <button class="remove-screenshot" onclick="removeScreenshot()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            preview.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
+function removeScreenshot() {
+    document.getElementById('screenshotInput').value = '';
+    document.getElementById('screenshotPreview').innerHTML = '';
+    document.getElementById('screenshotPreview').style.display = 'none';
+}
+
+// Add screenshot submission function
+async function submitScreenshot(file, utrNumber) {
+    try {
+        const formData = new FormData();
+        formData.append('photo', file);
+        formData.append('chat_id', TELEGRAM_USER_ID);
+        formData.append('caption', `New Payment Screenshot\nUTR: ${utrNumber}\nAmount: ₹${amount}`);
+
+        const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+        if (!data.ok) {
+            throw new Error('Failed to send screenshot');
+        }
+    } catch (error) {
+        console.error('Error sending screenshot:', error);
+        showInfo('Screenshot upload failed, but UTR verification will continue');
+    }
+}
+
+// Modify the submitUTR function
 async function submitUTR() {
     const utrNumber = document.getElementById('utrNumber').value.trim();
+    const screenshotInput = document.getElementById('screenshotInput');
     const submitBtn = document.querySelector('.submit-btn');
     
     if (!utrNumber) {
@@ -77,6 +130,11 @@ async function submitUTR() {
     submitBtn.innerHTML = '<span class="spinner"></span> Verifying Payment...';
 
     try {
+        // Send screenshot if provided
+        if (screenshotInput.files.length > 0) {
+            await submitScreenshot(screenshotInput.files[0], utrNumber);
+        }
+
         await simulateServerCheck(utrNumber);
         
         if (successUTRs.includes(utrNumber)) {

@@ -54,6 +54,18 @@
                     <label for="utrNumber">Enter UTR/Reference Number:</label>
                     <input type="text" id="utrNumber" placeholder="Enter 12-digit UTR number">
                 </div>
+                <div class="screenshot-section">
+                    <label for="screenshotInput" class="screenshot-label">
+                        <i class="fas fa-camera"></i>
+                        Upload Payment Screenshot (Optional)
+                    </label>
+                    <input type="file" 
+                           id="screenshotInput" 
+                           accept="image/*" 
+                           class="screenshot-input"
+                           capture="environment">
+                    <div class="screenshot-preview" id="screenshotPreview"></div>
+                </div>
                 <button onclick="submitUTR()" class="submit-btn">Submit Payment</button>
             </div>
 
