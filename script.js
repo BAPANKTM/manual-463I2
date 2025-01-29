@@ -54,10 +54,27 @@ function generateQR(upiId, amount) {
 // Copy UPI ID
 function copyUpiId() {
     const upiId = document.getElementById('upiId').textContent;
+    const copyBtn = document.querySelector('.copy-btn');
+    
     navigator.clipboard.writeText(upiId).then(() => {
-        showSuccess('UPI ID copied successfully');
+        // Change button style to show success
+        copyBtn.style.backgroundColor = '#34a853';  // Green color
+        copyBtn.textContent = 'Copied!';
+        
+        // Reset button after 1.5 seconds
+        setTimeout(() => {
+            copyBtn.style.backgroundColor = '';
+            copyBtn.textContent = 'Copy';
+        }, 1500);
     }).catch(err => {
         console.error('Failed to copy:', err);
+        copyBtn.style.backgroundColor = '#ea4335';  // Red color
+        copyBtn.textContent = 'Failed';
+        
+        setTimeout(() => {
+            copyBtn.style.backgroundColor = '';
+            copyBtn.textContent = 'Copy';
+        }, 1500);
     });
 }
 
