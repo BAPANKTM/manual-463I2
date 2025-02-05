@@ -1,0 +1,42 @@
+{
+    "USDT-TRC20": {
+        "name": "tether",
+        "address": "TW11C5yG2Qu2pfcET4wYVDGU9RGTUvi8ac",
+        "network": "TRC20"
+    },
+    "USDT-ERC20": {
+        "name": "tether",
+        "address": "0xDbb97D3D3C73B4C0A7e110Fb470170aA29364B87",
+        "network": "ERC20"
+    },
+    "USDT-POLYGON": {
+        "name": "tether",
+        "address": "0xDbb97D3D3C73B4C0A7e110Fb470170aA29364B87",
+        "network": "Polygon"
+    },
+    "USDT-BEP20": {
+        "name": "tether",
+        "address": "0xDbb97D3D3C73B4C0A7e110Fb470170aA29364B87",
+        "network": "BEP20"
+    },
+    "BTC": {
+        "name": "bitcoin",
+        "address": "bc1qpjcfecfn7hlkn5gvnef0nfueh4dkqltsh2jzxc",
+        "network": "Bitcoin"
+    },
+    "ETH": {
+        "name": "ethereum",
+        "address": "0xDbb97D3D3C73B4C0A7e110Fb470170aA29364B87",
+        "network": "Ethereum"
+    },
+    "LTC": {
+        "name": "litecoin",
+        "address": "ltc1qdueknqw8qlzq7wkxeskthcyg66rnghn0q7vqz9",
+        "network": "Litecoin"
+    },
+    "TRX": {
+        "name": "tron",
+        "address": "TW11C5yG2Qu2pfcET4wYVDGU9RGTUvi8ac",
+        "network": "Tron"
+    }
+}

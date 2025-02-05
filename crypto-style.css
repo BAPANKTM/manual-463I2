@@ -1,0 +1,77 @@
+/* Import base styles from style.css */
+@import 'style.css';
+
+/* Crypto-specific styles */
+.amount-display {
+    text-align: center;
+    margin: 15px 0;
+}
+
+.fiat-amount {
+    font-size: 1.2rem;
+    color: #5f6368;
+    margin-bottom: 5px;
+}
+
+.crypto-amount {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.wallet-details {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border-color);
+}
+
+.address-section {
+    margin-top: 20px;
+}
+
+.address-info {
+    font-family: 'Roboto Mono', monospace;
+    word-break: break-all;
+}
+
+.network-name {
+    display: block;
+    color: #5f6368;
+    margin-top: 4px;
+}
+
+.important-notes {
+    background: #fff3e0;
+    padding: 16px;
+    border-radius: 12px;
+    margin: 24px 0;
+}
+
+.important-notes h3 {
+    color: #f57c00;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.important-notes ul {
+    list-style: none;
+    padding-left: 24px;
+}
+
+.important-notes li {
+    position: relative;
+    margin-bottom: 8px;
+    color: #e65100;
+}
+
+.important-notes li:before {
+    content: "•";
+    position: absolute;
+    left: -20px;
+    color: #f57c00;
+} 

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Payment</title>
+    <link rel="stylesheet" href="crypto-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="deposit-card">
+            <div class="card-header">
+                <h2>Crypto Payment</h2>
+                <div class="amount-display">
+                    <p class="fiat-amount">₹<span id="inrAmount">0</span></p>
+                    <p class="crypto-amount"><span id="cryptoAmount">0</span> <span id="cryptoSymbol">USDT</span></p>
+                </div>
+            </div>
+
+            <div class="wallet-details">
+                <div class="qr-section">
+                    <div id="qrCode"></div>
+                    <p class="scan-text">Scan QR to copy address</p>
+                </div>
+
+                <div class="address-section">
+                    <p>Send to this address:</p>
+                    <div class="copy-section">
+                        <div class="address-info">
+                            <span id="walletAddress">loading...</span>
+                            <small id="networkName" class="network-name"></small>
+                        </div>
+                        <button onclick="copyAddress()" class="copy-btn">Copy</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="screenshot-section">
+                <label for="screenshotInput" class="screenshot-label">
+                    <i class="fas fa-image"></i>
+                    Upload Payment Screenshot
+                </label>
+                <input type="file" id="screenshotInput" accept="image/*" class="screenshot-input">
+                <div class="screenshot-preview" id="screenshotPreview"></div>
+                <button onclick="submitScreenshot()" class="submit-btn">Submit Payment</button>
+            </div>
+
+            <div class="instructions">
+                <h3>Payment Instructions:</h3>
+                <ol>
+                    <li>Copy the wallet address or scan QR code</li>
+                    <li>Send exact amount of <span id="instructionAmount">0</span> <span id="instructionSymbol">USDT</span></li>
+                    <li>Upload screenshot of successful payment</li>
+                </ol>
+            </div>
+
+            <div class="important-notes">
+                <h3><i class="fas fa-exclamation-triangle"></i> Important Notes:</h3>
+                <ul>
+                    <li>Make sure you're sending on the correct network (<span id="networkNote">loading...</span>)</li>
+                    <li>Send only the exact amount mentioned</li>
+                    <li>Transaction may take 5-10 minutes to confirm</li>
+                </ul>
+            </div>
+
+            <div class="support-section">
+                <h3><i class="fas fa-headset"></i> Need Help?</h3>
+                <p>Contact our 24/7 support team at:</p>
+                <a href="mailto:support@quotex.com">support@quotex.com</a>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script src="crypto-script.js"></script>
+</body>
+</html> 
