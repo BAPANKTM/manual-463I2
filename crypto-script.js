@@ -34,6 +34,11 @@ const CRYPTO_DATA = {
         symbol: "ETH",
         network: "Ethereum",
         decimals: 4
+    },
+    "ltc": {
+        symbol: "LTC",
+        network: "Litecoin",
+        decimals: 4
     }
 };
 
