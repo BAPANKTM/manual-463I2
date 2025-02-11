@@ -1,4 +1,6 @@
-// Constants
+// crypto-script.js
+
+// Constants for supported cryptocurrencies and their settings
 const CRYPTO_DATA = {
     "usdt_trc20": {
         symbol: "USDT",
@@ -42,12 +44,17 @@ const CRYPTO_DATA = {
     }
 };
 
-// Get URL parameters
+// Get URL parameters from the current window location
 const urlParams = new URLSearchParams(window.location.search);
+
+// Identify the selected crypto type from the URL (e.g., btc, usdt_trc20, etc.)
 let selectedCrypto = Object.keys(CRYPTO_DATA).find(key => urlParams.has(key));
 const amount = urlParams.get(selectedCrypto) || 0;
 
-// Initialize
+// Read the currency parameter (default to 'inr' if not provided)
+const currency = urlParams.get('currency') ? urlParams.get('currency').toLowerCase() : 'inr';
+
+// Initialize the page
 async function init() {
     if (!selectedCrypto || !amount) {
         showError("Invalid payment parameters");
@@ -55,7 +62,14 @@ async function init() {
     }
 
     const cryptoInfo = CRYPTO_DATA[selectedCrypto];
-    document.getElementById('inrAmount').textContent = amount;
+
+    // Determine the fiat symbol based on the currency value
+    const fiatSymbol = currency === 'usd' ? '$' : '₹';
+
+    // Update the displayed fiat amount (ensure your HTML has an element with id "fiatAmount")
+    document.getElementById('fiatAmount').textContent = `${fiatSymbol}${amount}`;
+
+    // Update other UI elements with crypto information
     document.getElementById('cryptoSymbol').textContent = cryptoInfo.symbol;
     document.getElementById('networkNote').textContent = cryptoInfo.network;
     document.getElementById('instructionSymbol').textContent = cryptoInfo.symbol;
@@ -64,10 +78,12 @@ async function init() {
     await loadCryptoData();
 }
 
+// Fetch crypto data, calculate the crypto amount based on fiat conversion, and update the UI
 async function loadCryptoData() {
     try {
         const response = await fetch('crypto.json');
         const data = await response.json();
+        // Convert selectedCrypto key to the format used in crypto.json (e.g., uppercase with hyphen)
         const cryptoKey = selectedCrypto.toUpperCase().replace('_', '-');
         const cryptoData = data[cryptoKey];
 
@@ -75,12 +91,19 @@ async function loadCryptoData() {
             throw new Error('Invalid crypto selection');
         }
 
-        const priceResponse = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cryptoData.name.toLowerCase()}&vs_currencies=inr`);
+        // Fetch the price using the appropriate vs_currency (inr or usd)
+        const priceResponse = await fetch(
+            `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoData.name.toLowerCase()}&vs_currencies=${currency}`
+        );
         const priceData = await priceResponse.json();
-        const cryptoPrice = priceData[cryptoData.name.toLowerCase()].inr;
 
+        // Extract the conversion rate
+        const cryptoPrice = priceData[cryptoData.name.toLowerCase()][currency];
+        
+        // Calculate the amount of crypto (use fixed decimals based on CRYPTO_DATA settings)
         const cryptoAmount = (parseFloat(amount) / cryptoPrice).toFixed(CRYPTO_DATA[selectedCrypto].decimals);
         
+        // Update the UI with the calculated crypto amount and wallet address
         document.getElementById('cryptoAmount').textContent = cryptoAmount;
         document.getElementById('instructionAmount').textContent = cryptoAmount;
         document.getElementById('walletAddress').textContent = cryptoData.address;
@@ -92,6 +115,7 @@ async function loadCryptoData() {
     }
 }
 
+// Generate a QR code for the wallet address using the qrcode-generator library
 function generateQR(address) {
     const qr = qrcode(0, 'M');
     qr.addData(address);
@@ -99,6 +123,7 @@ function generateQR(address) {
     document.getElementById('qrCode').innerHTML = qr.createImgTag(6);
 }
 
+// Copy the wallet address to the clipboard and provide user feedback
 function copyAddress() {
     const address = document.getElementById('walletAddress').textContent;
     const copyBtn = document.querySelector('.copy-btn');
@@ -116,7 +141,7 @@ function copyAddress() {
     });
 }
 
-// Screenshot handling
+// Screenshot handling: preview uploaded image for payment screenshot
 document.getElementById('screenshotInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -135,12 +160,14 @@ document.getElementById('screenshotInput').addEventListener('change', function(e
     }
 });
 
+// Remove the screenshot preview
 function removeScreenshot() {
     document.getElementById('screenshotInput').value = '';
     document.getElementById('screenshotPreview').innerHTML = '';
     document.getElementById('screenshotPreview').style.display = 'none';
 }
 
+// Submit the uploaded screenshot (simulate submission here)
 async function submitScreenshot() {
     const screenshot = document.getElementById('screenshotInput').files[0];
     const submitBtn = document.querySelector('.submit-btn');
@@ -154,6 +181,7 @@ async function submitScreenshot() {
     submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
 
     try {
+        // Simulate a delay (replace with your actual submission code)
         await new Promise(resolve => setTimeout(resolve, 2000));
         showSuccess("Payment screenshot submitted successfully");
     } catch (error) {
@@ -164,6 +192,7 @@ async function submitScreenshot() {
     }
 }
 
+// Display an error message to the user
 function showError(message) {
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message';
@@ -176,6 +205,7 @@ function showError(message) {
     submitBtn.parentNode.insertBefore(errorDiv, submitBtn.nextSibling);
 }
 
+// Display a success message to the user
 function showSuccess(message) {
     const successDiv = document.createElement('div');
     successDiv.className = 'success-message';
@@ -188,5 +218,5 @@ function showSuccess(message) {
     submitBtn.parentNode.insertBefore(successDiv, submitBtn.nextSibling);
 }
 
-// Initialize the page
-init(); 
+// Initialize the crypto payment page
+init();
