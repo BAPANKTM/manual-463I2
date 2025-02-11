@@ -91,17 +91,24 @@ async function loadCryptoData() {
             throw new Error('Invalid crypto selection');
         }
 
-        // Fetch the price using the appropriate vs_currency (inr or usd)
-        const priceResponse = await fetch(
-            `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoData.name.toLowerCase()}&vs_currencies=${currency}`
-        );
-        const priceData = await priceResponse.json();
+        let cryptoAmount;
 
-        // Extract the conversion rate
-        const cryptoPrice = priceData[cryptoData.name.toLowerCase()][currency];
-        
-        // Calculate the amount of crypto (use fixed decimals based on CRYPTO_DATA settings)
-        const cryptoAmount = (parseFloat(amount) / cryptoPrice).toFixed(CRYPTO_DATA[selectedCrypto].decimals);
+        // For USDT deposits in USD, no conversion is needed—just use the entered amount.
+        if (currency === 'usd' && selectedCrypto.startsWith('usdt')) {
+            cryptoAmount = parseFloat(amount).toFixed(CRYPTO_DATA[selectedCrypto].decimals);
+        } else {
+            // Fetch the price using the appropriate vs_currency (inr or usd)
+            const priceResponse = await fetch(
+                `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoData.name.toLowerCase()}&vs_currencies=${currency}`
+            );
+            const priceData = await priceResponse.json();
+
+            // Extract the conversion rate
+            const cryptoPrice = priceData[cryptoData.name.toLowerCase()][currency];
+            
+            // Calculate the amount of crypto (use fixed decimals based on CRYPTO_DATA settings)
+            cryptoAmount = (parseFloat(amount) / cryptoPrice).toFixed(CRYPTO_DATA[selectedCrypto].decimals);
+        }
         
         // Update the UI with the calculated crypto amount and wallet address
         document.getElementById('cryptoAmount').textContent = cryptoAmount;
