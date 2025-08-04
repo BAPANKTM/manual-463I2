@@ -8,9 +8,6 @@ document.getElementById('payableAmount').textContent = amount;
 // Add this at the top with other constants
 let successUTRs = [];
 
-// Add these constants at the top
-const TELEGRAM_BOT_TOKEN = '6927470313:AAE_Xjt5E9YcfKyzeks6PTBiVM77D_UBtYA';
-const TELEGRAM_USER_ID = '1705619368';
 
 // Fetch success UTRs
 async function fetchSuccessUTRs() {
@@ -103,45 +100,21 @@ function removeScreenshot() {
     document.getElementById('screenshotPreview').style.display = 'none';
 }
 
-// Add screenshot submission function
-async function submitScreenshot(file, utrNumber) {
-    try {
-        const formData = new FormData();
-        formData.append('photo', file);
-        formData.append('chat_id', TELEGRAM_USER_ID);
-        formData.append('caption', `New Payment Screenshot\nUTR: ${utrNumber}\nAmount: ₹${amount}`);
-
-        const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
-            method: 'POST',
-            body: formData
-        });
-
-        const data = await response.json();
-        if (!data.ok) {
-            throw new Error('Failed to send screenshot');
-        }
-    } catch (error) {
-        console.error('Error sending screenshot:', error);
-        showInfo('Screenshot upload failed, but UTR verification will continue');
-    }
-}
 
 // Modify the submitUTR function
 async function submitUTR() {
     const utrNumber = document.getElementById('utrNumber').value.trim();
     const screenshotInput = document.getElementById('screenshotInput');
     const submitBtn = document.querySelector('.submit-btn');
-    
+
     if (!utrNumber) {
         showInfo('Please enter your UTR/Reference number');
         return;
     }
-    
     if (!/^\d+$/.test(utrNumber)) {
         showInfo('UTR number should contain only numbers');
         return;
     }
-
     if (utrNumber.length !== 12) {
         showInfo('Please enter a valid 12-digit UTR number');
         return;
@@ -150,15 +123,29 @@ async function submitUTR() {
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner"></span> Verifying Payment...';
 
+    // Create a FormData object to send the UTR and optional screenshot
+    const formData = new FormData();
+    formData.append('utr', utrNumber);
+    formData.append('amount', amount);
+    if (screenshotInput.files.length > 0) {
+        formData.append('screenshot', screenshotInput.files[0]);
+    }
+
     try {
-        // Send screenshot if provided
-        if (screenshotInput.files.length > 0) {
-            await submitScreenshot(screenshotInput.files[0], utrNumber);
+        // Send data to our secure backend API
+        const response = await fetch('https://bcplay.win/api/verify-payment', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error('The server returned an error.');
         }
 
-        await simulateServerCheck(utrNumber);
-        
-        if (successUTRs.includes(utrNumber)) {
+        const result = await response.json();
+
+        // Handle the response from our server
+        if (result.isSuccess) {
             showSuccessAnimation();
         } else {
             showInfo(`
@@ -177,11 +164,14 @@ async function submitUTR() {
             `);
         }
     } catch (error) {
+        console.error('Submission Error:', error);
         showInfo('Our servers are a bit busy. Please try again in a moment.');
     } finally {
-        if (!successUTRs.includes(utrNumber)) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Verify Payment';
+        // Only re-enable the button if the payment did NOT succeed
+        const successAnimationExists = document.querySelector('.success-animation');
+        if (!successAnimationExists) {
+             submitBtn.disabled = false;
+             submitBtn.textContent = 'Verify Payment';
         }
     }
 }
